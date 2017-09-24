@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:twitter="http://www.mulesoft.org/schema/mule/twitter" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/twitter http://www.mulesoft.org/schema/mule/twitter/current/mule-twitter.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+    
+     <twitter:config name="Twitter__Configuration" accessKey="${accessKey}" accessSecret="${accessSecret}" consumerKey="${consumerKey}" consumerSecret="${consumerSecret}" doc:name="Twitter: Configuration"/>
+    <flow name="mytwitterfeedFlow">
+        <twitter:user-stream config-ref="Twitter__Configuration" doc:name="Twitter (Streaming)">
+            <twitter:keywords>
+                <twitter:keyword>3249210596</twitter:keyword>
+            </twitter:keywords>
+        </twitter:user-stream>
+        <logger message="Latest Tweet on your Twitter : #[payload.payload.retweetedStatus.text]" level="INFO" doc:name="Logger"/>
+        <scripting:component doc:name="Groovy">
+            <scripting:script engine="Groovy"><![CDATA[def command = "python /home/pi/ledBlink.py"
+println "$command"
+def cmd = command.execute()]]></scripting:script>
+        </scripting:component>
+    </flow>
+</mule>
